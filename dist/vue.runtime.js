@@ -2318,6 +2318,9 @@ function lifecycleMixin (Vue) {
         vm.$options._parentElm,
         vm.$options._refElm
       );
+      // no need for the ref nodes after initial patch
+      // this prevents keeping a detached DOM tree in memory (#5851)
+      vm.$options._parentElm = vm.$options._refElm = null;
     } else {
       // updates
       vm.$el = vm.__patch__(prevVnode, vnode);
@@ -2382,8 +2385,6 @@ function lifecycleMixin (Vue) {
     if (vm.$el) {
       vm.$el.__vue__ = null;
     }
-    // remove reference to DOM nodes (prevents leak)
-    vm.$options._parentElm = vm.$options._refElm = null;
   };
 }
 
